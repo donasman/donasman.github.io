@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <style>
+    .l { fill: none; stroke: #0e7a5f; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+    .i { fill: none; stroke: #0e7a5f; stroke-width: 1.4; stroke-dasharray: 2.2 2.2; }
+    .d { fill: #0e7a5f; }
+    @media (prefers-color-scheme: dark) { .l, .i { stroke: #4cc89a; } .d { fill: #4cc89a; } }
+  </style>
+  <path class="l" d="M8.5 14.5 19.5 8 31.5 12.5 29.5 26.5 16 32 8 24.5Z"/>
+  <path class="i" d="M19.5 8 18 19.5 29.5 26.5M18 19.5 8 24.5"/>
+  <circle class="d" cx="8.5" cy="14.5" r="2.2"/><circle class="d" cx="19.5" cy="8" r="2.2"/><circle class="d" cx="31.5" cy="12.5" r="2.2"/>
+  <circle class="d" cx="29.5" cy="26.5" r="2.2"/><circle class="d" cx="16" cy="32" r="2.2"/><circle class="d" cx="8" cy="24.5" r="2.2"/>
+</svg>

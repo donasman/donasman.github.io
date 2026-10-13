@@ -180,3 +180,43 @@
     io.observe(root);
   });
 })();
+
+// 쇼릴: 사이트 테마에 맞는 영상을 고르고, 화면에 보일 때만 재생한다.
+// 동작 줄이기 설정이면 자동 재생하지 않고, 누르면 재생한다.
+(() => {
+  const video = document.querySelector('.reel-video');
+  if (!video) return;
+  const btn = document.querySelector('.reel-toggle');
+  const dark = window.matchMedia('(prefers-color-scheme: dark)');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let userPaused = reduce;
+  let visible = false;
+
+  const pick = () => {
+    const theme = dark.matches ? 'dark' : 'light';
+    const src = video.dataset[theme];
+    if (video.getAttribute('src') === src) return;
+    const t = video.currentTime;
+    video.poster = video.dataset[theme === 'dark' ? 'posterDark' : 'posterLight'];
+    video.src = src;
+    video.currentTime = t;
+    if (visible && !userPaused) video.play().catch(() => {});
+  };
+  const label = () => { btn.textContent = video.paused ? '재생' : '일시 정지'; };
+  const toggle = () => {
+    if (video.paused) { userPaused = false; video.play().catch(() => {}); } else { userPaused = true; video.pause(); }
+  };
+
+  pick();
+  dark.addEventListener('change', pick);
+  btn.addEventListener('click', toggle);
+  video.addEventListener('click', toggle);
+  video.addEventListener('play', label);
+  video.addEventListener('pause', label);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && !userPaused) video.play().catch(() => {});
+    else if (!visible) video.pause();
+  }, { threshold: 0.4 }).observe(video);
+  label();
+})();
