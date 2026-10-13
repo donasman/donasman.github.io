@@ -147,6 +147,14 @@
                 <div class="arr"></div>
                 <div class="node2"><b>적재와 산출</b>지표, GIS 레이어</div>
               </div>
+              <div class="sim resume" data-sim="resume">
+                <div class="bars">
+                  <div class="bar-row" data-row="before"><span class="bar-k">이전</span><div class="bar" aria-hidden="true"></div><span class="bar-st">준비</span></div>
+                  <div class="bar-row" data-row="after"><span class="bar-k">이후</span><div class="bar" aria-hidden="true"></div><span class="bar-st">준비</span></div>
+                </div>
+                <p class="bar-legend">칸 하나가 처리 단위이고, 칸 아래 표시가 저장 시점입니다.</p>
+                <div class="sim-foot"><p class="sim-cap" aria-live="polite">같은 작업이 중간에 실패했을 때 두 방식이 어떻게 다시 도는지 비교합니다.</p><button class="replay" type="button">다시 보기</button></div>
+              </div>
             </div></div>
             <div class="step"><div class="k result">결과</div><div class="v">필요한 지표와 레이어를 산출했고, 중간에 멈춰도 3,000만 건을 처음부터 다시 돌리지 않게 됐습니다. 다음 갱신에서도 같은 코드를 이어서 썼습니다.</div></div>
           </div></div>
@@ -204,6 +212,56 @@
         </div>
       </header>
 
+      <figure class="screens" data-screens>
+        <div class="tabs" role="tablist" aria-label="PitchLog League 화면">
+          <button class="tab" type="button" role="tab" id="pl-t1" aria-controls="pl-s1" aria-selected="true">경기 상세</button>
+          <button class="tab" type="button" role="tab" id="pl-t2" aria-controls="pl-s2" aria-selected="false" tabindex="-1">경기 일정</button>
+          <button class="tab" type="button" role="tab" id="pl-t3" aria-controls="pl-s3" aria-selected="false" tabindex="-1">순위</button>
+          <button class="tab" type="button" role="tab" id="pl-t4" aria-controls="pl-s4" aria-selected="false" tabindex="-1">득점 순위</button>
+        </div>
+        <div class="screen" role="tabpanel" id="pl-s1" aria-labelledby="pl-t1">
+          <p class="route">/matches/1557420</p>
+          <a class="shot" href="assets/shots/pitchlog-match-light.webp" target="_blank" rel="noopener" aria-label="경기 상세 화면 크게 보기">
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="assets/shots/pitchlog-match-dark.webp">
+              <img src="assets/shots/pitchlog-match-light.webp" width="2048" height="1280" loading="lazy" alt="경기 상세 화면. 코번트리와 뉴캐슬의 4 대 1 경기 결과, 양 팀 포메이션과 라인업, 이 경기 최고 선수가 보인다.">
+            </picture>
+          </a>
+          <p class="cap">라인업, 경기 통계, 타임라인은 경기 상세 백필로 채운 데이터입니다. 진행 중인 경기를 15초 주기로 갱신하는 폴러를 만들었고, 이전 상태로 되돌아가는 쓰기는 조건부 UPDATE로 막습니다.</p>
+        </div>
+        <div class="screen" role="tabpanel" id="pl-s2" aria-labelledby="pl-t2" hidden>
+          <p class="route">/matches</p>
+          <a class="shot" href="assets/shots/pitchlog-matches-light.webp" target="_blank" rel="noopener" aria-label="경기 일정 화면 크게 보기">
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="assets/shots/pitchlog-matches-dark.webp">
+              <img src="assets/shots/pitchlog-matches-light.webp" width="2048" height="1280" loading="lazy" alt="경기 일정과 결과 화면. 왼쪽에 대회와 경기 상태 필터, 가운데에 최근 결과와 다가오는 경기, 오른쪽에 프리미어 리그 순위가 보인다.">
+            </picture>
+          </a>
+          <p class="cap">19개 대회의 일정과 결과를 대회와 경기 상태별로 봅니다. 외부 API 호출은 모두 한 클래스를 거치고, 분당 450콜 이하로 제한됩니다.</p>
+        </div>
+        <div class="screen" role="tabpanel" id="pl-s3" aria-labelledby="pl-t3" hidden>
+          <p class="route">/standings?competition=premier-league</p>
+          <a class="shot" href="assets/shots/pitchlog-standings-light.webp" target="_blank" rel="noopener" aria-label="순위 화면 크게 보기">
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="assets/shots/pitchlog-standings-dark.webp">
+              <img src="assets/shots/pitchlog-standings-light.webp" width="2048" height="1280" loading="lazy" alt="프리미어 리그 순위표 화면. 팀별 경기 수, 승무패, 득실, 승점과 최근 5경기 결과가 보인다.">
+            </picture>
+          </a>
+          <p class="cap">대회와 시즌별 순위표입니다. "대회당 현재 시즌은 하나" 같은 규칙은 부분 unique 인덱스로 DB가 지킵니다.</p>
+        </div>
+        <div class="screen" role="tabpanel" id="pl-s4" aria-labelledby="pl-t4" hidden>
+          <p class="route">/stats?competition=premier-league</p>
+          <a class="shot" href="assets/shots/pitchlog-stats-light.webp" target="_blank" rel="noopener" aria-label="득점 순위 화면 크게 보기">
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="assets/shots/pitchlog-stats-dark.webp">
+              <img src="assets/shots/pitchlog-stats-light.webp" width="2048" height="1280" loading="lazy" alt="프리미어 리그 득점 순위와 도움 순위 화면. 오른쪽 아래에 AI 어시스턴트의 질문하기 버튼이 있다.">
+            </picture>
+          </a>
+          <p class="cap">대회별 득점, 도움 순위입니다. 오른쪽 아래 "질문하기"는 AI 어시스턴트로, 숫자를 직접 만들지 않고 서버의 결정적 도구만 호출합니다.</p>
+        </div>
+        <p class="note">2026년 10월 13일 실제 서비스에서 캡처했습니다. 화면을 누르면 크게 볼 수 있습니다.</p>
+      </figure>
+
       <div class="row" style="margin-top:40px; border-top:1px solid var(--rule)">
         <div class="k">규모</div>
         <div class="v">
@@ -219,33 +277,34 @@
       </div>
       <div class="row"><div class="k">첫 버전에서</div><div class="v">2026 월드컵 기간에 Spring Boot와 Spring Batch로 첫 버전을 만들어 운영했습니다. 회고에서 검증 장치 부재, 0건 수집을 성공으로 처리한 '조용한 실패', 배치와 스케줄러의 상호 호출을 문제로 정리했고, 범위를 넓히면서 NestJS와 Prisma로 다시 설계했습니다. 전환 근거는 ADR 문서로 남겼습니다.</div></div>
 
-      <div class="figure" role="img" aria-label="PitchLog League 아키텍처: Vercel의 React 화면이 EC2의 NestJS 서버를 호출하고, 서버의 수집 계층이 API 클라이언트를 거쳐 외부 축구 API에서 데이터를 받아 PostgreSQL에 적재하며, 매일 S3로 백업한다">
+      <div class="figure" data-trace-fig role="img" aria-label="PitchLog League 아키텍처: Vercel의 React 화면이 EC2의 NestJS 서버를 호출하고, 서버의 수집 계층이 API 클라이언트를 거쳐 외부 축구 API에서 데이터를 받아 PostgreSQL에 적재하며, 매일 S3로 백업한다">
         <svg class="dg" viewBox="0 0 600 250">
-          <defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path class="head" d="M0 0L8 4L0 8Z"/></marker></defs>
+          <defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7.2" markerHeight="7.2" markerUnits="userSpaceOnUse" orient="auto"><path class="head" d="M0 0L8 4L0 8Z"/></marker></defs>
           <rect class="bx" x="0" y="32" width="104" height="40" rx="3"/><text class="t" x="52" y="49">React SPA</text><text class="s" x="52" y="62">Vercel 정적 호스팅</text>
           <rect class="bx" x="0" y="148" width="104" height="40" rx="3"/><text class="t" x="52" y="165">Claude Desktop</text><text class="s" x="52" y="178">MCP 클라이언트</text>
           <rect class="ct" x="140" y="2" width="292" height="246" rx="4"/><text class="cap" x="152" y="19">AWS EC2, NestJS 모듈형 모놀리스(systemd)</text>
           <rect class="bx" x="152" y="32" width="128" height="40" rx="3"/><text class="t" x="216" y="49">REST API 17개</text><text class="s" x="216" y="62">입력 검증, ETag 캐시</text>
           <rect class="bx" x="292" y="32" width="128" height="40" rx="3"/><text class="t" x="356" y="49">AI 어시스턴트</text><text class="s" x="356" y="62">결정적 도구 10개 호출</text>
-          <rect class="bx" x="152" y="90" width="128" height="40" rx="3"/><text class="t" x="216" y="107">스케줄러 잡 5개</text><text class="s" x="216" y="120">기본 꺼짐, 잡별 스위치</text>
-          <rect class="bx hl" x="292" y="90" width="128" height="40" rx="3"/><text class="t" x="356" y="107">수집 계층 L0–L6</text><text class="s" x="356" y="120">배치 upsert, 체크포인트</text>
+          <rect class="bx" data-trace="1" x="152" y="90" width="128" height="40" rx="3"/><text class="t" x="216" y="107">스케줄러 잡 5개</text><text class="s" x="216" y="120">기본 꺼짐, 잡별 스위치</text>
+          <rect class="bx hl" data-trace="2" x="292" y="90" width="128" height="40" rx="3"/><text class="t" x="356" y="107">수집 계층 L0–L6</text><text class="s" x="356" y="120">배치 upsert, 체크포인트</text>
           <rect class="bx" x="152" y="148" width="128" height="40" rx="3"/><text class="t" x="216" y="165">MCP 서버</text><text class="s" x="216" y="178">어시스턴트와 같은 도구</text>
-          <rect class="bx hl" x="292" y="148" width="128" height="40" rx="3"/><text class="t" x="356" y="165">API 클라이언트</text><text class="s" x="356" y="178">10초 제한, 분당 450콜, 재시도</text>
+          <rect class="bx hl" data-trace="3" x="292" y="148" width="128" height="40" rx="3"/><text class="t" x="356" y="165">API 클라이언트</text><text class="s" x="356" y="178">10초 제한, 분당 450콜, 재시도</text>
           <rect class="bx" x="152" y="206" width="268" height="30" rx="3"/><text class="s" x="286" y="224">백업 타이머 매일 04:00(KST), pg_dump</text>
           <rect class="bx" x="470" y="32" width="130" height="40" rx="3"/><text class="t" x="535" y="49">Gemini</text><text class="s" x="535" y="62">function calling</text>
-          <rect class="bx" x="470" y="90" width="130" height="40" rx="3"/><text class="t" x="535" y="107">PostgreSQL</text><text class="s" x="535" y="120">Supabase 서울 리전</text>
-          <rect class="bx" x="470" y="148" width="130" height="40" rx="3"/><text class="t" x="535" y="165">API-Football v3</text><text class="s" x="535" y="178">하루 7,500콜 한도</text>
+          <rect class="bx" data-trace="5" x="470" y="90" width="130" height="40" rx="3"/><text class="t" x="535" y="107">PostgreSQL</text><text class="s" x="535" y="120">Supabase 서울 리전</text>
+          <rect class="bx" data-trace="4" x="470" y="148" width="130" height="40" rx="3"/><text class="t" x="535" y="165">API-Football v3</text><text class="s" x="535" y="178">하루 7,500콜 한도</text>
           <rect class="bx" x="470" y="201" width="130" height="40" rx="3"/><text class="t" x="535" y="218">AWS S3</text><text class="s" x="535" y="231">최근 8개, 월별 12개 보관</text>
           <path class="ln" d="M104 52H150" marker-end="url(#ah)"/><text class="lb" x="121" y="46">/api/*</text>
           <path class="ln" d="M104 168H150" marker-end="url(#ah)"/><text class="lb" x="121" y="162">stdio</text>
-          <path class="ln" d="M280 110H290" marker-end="url(#ah)"/>
-          <path class="ln" d="M356 130V146" marker-end="url(#ah)"/>
+          <path class="ln" data-trace="1" d="M280 110H290" marker-end="url(#ah)"/>
+          <path class="ln" data-trace="2" d="M356 130V146" marker-end="url(#ah)"/>
           <path class="ln" d="M420 52H468" marker-end="url(#ah)"/>
-          <path class="ln" d="M420 110H468" marker-end="url(#ah)"/><text class="lb" x="451" y="104">Prisma</text>
-          <path class="ln" d="M420 168H468" marker-end="url(#ah)"/>
+          <path class="ln" data-trace="5" d="M420 110H468" marker-end="url(#ah)"/><text class="lb" x="451" y="104">Prisma</text>
+          <path class="ln" data-trace="3" d="M420 168H468" marker-end="url(#ah)"/>
           <path class="ln" d="M420 221H468" marker-end="url(#ah)"/>
         </svg>
       </div>
+      <p class="fig-cap">데이터 수집 경로: 스케줄러 잡이 수집 계층을 깨우면 API 클라이언트가 외부 API를 호출하고, 받은 데이터를 PostgreSQL에 배치 upsert합니다.</p>
 
       <div class="block-title"><h3>핵심 설계 결정</h3></div>
       <div class="row"><div class="k">외부 API 보호</div><div class="v">외부 호출을 한 클래스(<code>ApiFootballClient</code>)로 모으고 10초 제한 시간, 분당 450콜 자체 제한, 네트워크 오류와 429·5xx에만 1, 2, 4초 간격 재시도를 걸었습니다. 응답이 200이어도 오류 필드가 있으면 실패로 처리하고, 하루 한도에 닿으면 즉시 멈춰 '조용한 실패'를 막았습니다.</div></div>
@@ -328,6 +387,44 @@
         </div>
       </header>
 
+      <figure class="screens" data-screens>
+        <div class="tabs" role="tablist" aria-label="FantaSteel ERP 화면">
+          <button class="tab" type="button" role="tab" id="fs-t1" aria-controls="fs-s1" aria-selected="true">입고</button>
+          <button class="tab" type="button" role="tab" id="fs-t2" aria-controls="fs-s2" aria-selected="false" tabindex="-1">구매요청</button>
+          <button class="tab" type="button" role="tab" id="fs-t3" aria-controls="fs-s3" aria-selected="false" tabindex="-1">MRP</button>
+          <button class="tab" type="button" role="tab" id="fs-t4" aria-controls="fs-s4" aria-selected="false" tabindex="-1">조직도</button>
+        </div>
+        <div class="screen" role="tabpanel" id="fs-s1" aria-labelledby="fs-t1">
+          <p class="route">/goods-receipts</p>
+          <a class="shot dim" href="assets/shots/fantasteel-receipts.webp" target="_blank" rel="noopener" aria-label="입고 화면 크게 보기">
+            <img src="assets/shots/fantasteel-receipts.webp" width="2048" height="1280" loading="lazy" alt="입고 화면. 발주 PO-2610-0009의 발주 8t, 입고 누계 5t, 입고 예정 3t과 입고 등록 양식, 확정 시 만들어질 원료 LOT 번호 규칙이 보인다.">
+          </a>
+          <p class="cap">발주 8t 중 5t이 들어온 부분 입고 상태입니다. 입고를 확정하면 발주 행을 잠그고 미입고량을 다시 확인한 뒤 원료 LOT을 만듭니다.</p>
+        </div>
+        <div class="screen" role="tabpanel" id="fs-s2" aria-labelledby="fs-t2" hidden>
+          <p class="route">/purchase-requisitions</p>
+          <a class="shot dim" href="assets/shots/fantasteel-requisitions.webp" target="_blank" rel="noopener" aria-label="구매요청 화면 크게 보기">
+            <img src="assets/shots/fantasteel-requisitions.webp" width="2048" height="1280" loading="lazy" alt="구매요청 화면. 왼쪽에 상태별 구매요청 목록, 오른쪽에 등록, 부서장 승인, 발주로 이어지는 진행 표시와 요청 내용, 연결된 발주가 보인다.">
+          </a>
+          <p class="cap">등록, 부서장 승인, 발주로 이어지는 상태 흐름입니다. 승인과 반려는 현재 상태가 기대한 상태일 때만 바꾸는 조건부 UPDATE로 처리합니다.</p>
+        </div>
+        <div class="screen" role="tabpanel" id="fs-s3" aria-labelledby="fs-t3" hidden>
+          <p class="route">/mrp</p>
+          <a class="shot dim" href="assets/shots/fantasteel-mrp.webp" target="_blank" rel="noopener" aria-label="MRP 화면 크게 보기">
+            <img src="assets/shots/fantasteel-mrp.webp" width="2048" height="1280" loading="lazy" alt="MRP 화면. 기간, 남은 히트 수, 히트 톤, 필요 용선, 순소요 원료와 원료별 총소요, LOT 잔량, 입고 예정, 순소요량 표가 보인다.">
+          </a>
+          <p class="cap">생산 계획의 히트 톤, 제강 수율, 원단위로 원료 소요량을 구하고, 원료 LOT 잔량과 입고 예정을 빼서 순소요량을 계산합니다.</p>
+        </div>
+        <div class="screen" role="tabpanel" id="fs-s4" aria-labelledby="fs-t4" hidden>
+          <p class="route">/org-chart</p>
+          <a class="shot dim" href="assets/shots/fantasteel-org.webp" target="_blank" rel="noopener" aria-label="조직도 화면 크게 보기">
+            <img src="assets/shots/fantasteel-org.webp" width="2048" height="1280" loading="lazy" alt="조직도 화면. 회사 아래 영업부, 구매부, 생산부, 품질부, 물류부와 부서장, 사원 카드가 보인다.">
+          </a>
+          <p class="cap">부서와 사원 구조입니다. 승인 권한은 권한 코드가 아니라 요청자 부서의 부서장인지로 판단합니다.</p>
+        </div>
+        <p class="note">로컬 개발 환경에서 시드 데이터로 실행해 캡처했습니다. 제가 맡은 부분은 이 화면들이 쓰는 구매, MRP, 조직, 알림 API입니다.</p>
+      </figure>
+
       <div class="block-title"><h3>맡은 일</h3></div>
       <div class="row"><div class="k">기반 설계</div><div class="v">ERD를 Prisma 스키마(44개 모델)와 초기 마이그레이션으로 옮기고, CHECK 제약과 부분 unique 인덱스를 정의했습니다. 인증·권한 가드, 공통 예외 필터, 채번, 작업 로그 기록기를 만들었습니다.</div></div>
       <div class="row"><div class="k">구현 가이드</div><div class="v">16개 모듈 중 15개의 구현 가이드를 썼습니다. 테이블, API, 업무 규칙, 동시성 조건, 필수 테스트를 정의해 팀원들이 같은 기준으로 구현하게 했습니다.</div></div>
@@ -360,19 +457,27 @@
       </div></div>
       <div class="row"><div class="k">초과 입고 방지</div><div class="v">
         <p>입고를 확정할 때 발주 품목이 아니라 상위 발주 행을 <code>FOR UPDATE</code>로 잠급니다. 발주 상태(부분 입고, 입고 완료)는 같은 발주의 모든 품목 입고 합계로 정해지기 때문입니다. 60t씩 동시에 두 번 입고하면 하나만 성공하고 원료 LOT도 하나만 생기는 것을 테스트로 확인했습니다.</p>
-        <div class="txbox">
-          <div class="cap">하나의 트랜잭션</div>
-          <div class="flow">
-            <div class="node2 hl"><b>발주 행 잠금</b><code>FOR UPDATE</code></div>
-            <div class="arr"></div>
-            <div class="node2"><b>미입고량 확인</b>초과면 거부</div>
-            <div class="arr"></div>
-            <div class="node2"><b>입고 저장</b>원료 LOT 생성</div>
-            <div class="arr"></div>
-            <div class="node2"><b>발주 상태 갱신</b>부분, 완료</div>
-            <div class="arr"></div>
-            <div class="node2"><b>작업 로그</b>알림 기록</div>
+        <div class="sim" data-sim="receipt">
+          <div class="sim-state">
+            <div class="req" data-req="a"><b>요청 A</b><span>60t 입고</span><em class="st">준비</em></div>
+            <div class="req" data-req="b"><b>요청 B</b><span>60t 입고</span><em class="st">준비</em></div>
+            <div class="gauge"><span>발주 100t 중 미입고</span><b data-out="remain">100t</b><span>원료 LOT</span><b data-out="lots">0개</b></div>
           </div>
+          <div class="txbox">
+            <div class="cap">하나의 트랜잭션</div>
+            <div class="flow">
+              <div class="node2 hl" data-step="1"><b>발주 행 잠금</b><code>FOR UPDATE</code></div>
+              <div class="arr"></div>
+              <div class="node2" data-step="2"><b>미입고량 확인</b>초과면 거부</div>
+              <div class="arr"></div>
+              <div class="node2" data-step="3"><b>입고 저장</b>원료 LOT 생성</div>
+              <div class="arr"></div>
+              <div class="node2" data-step="4"><b>발주 상태 갱신</b>부분, 완료</div>
+              <div class="arr"></div>
+              <div class="node2" data-step="5"><b>작업 로그</b>알림 기록</div>
+            </div>
+          </div>
+          <div class="sim-foot"><p class="sim-cap" aria-live="polite">같은 발주 품목에 60t 입고가 동시에 두 번 들어온 경우입니다.</p><button class="replay" type="button">다시 보기</button></div>
         </div>
       </div></div>
       <div class="row"><div class="k">상태 전이</div><div class="v">승인, 반려, 재요청은 "현재 상태가 기대한 상태일 때만" 바꾸는 조건부 UPDATE로 처리해, 동시에 들어와도 한쪽만 반영됩니다. 여러 구매요청으로 발주를 만들 때는 id 순서로 잠가 교착을 피했습니다.</div></div>
@@ -444,19 +549,47 @@
             <div class="node2"><b>Docker 이미지</b>Docker Hub에 push</div>
           </div>
         </div>
-        <div class="lane">
-          <div class="lane-name">AWS EC2에 배포</div>
-          <div class="flow">
-            <div class="node2"><b>현재 색 확인</b>/server/env</div>
-            <div class="arr"></div>
-            <div class="node2 hl"><b>반대 색 기동</b>8080 또는 9090</div>
-            <div class="arr"></div>
-            <div class="node2 hl"><b>헬스체크</b>10초 간격 3회</div>
-            <div class="arr"></div>
-            <div class="node2"><b>Nginx 전환</b>설정 갱신, reload</div>
-            <div class="arr"></div>
-            <div class="node2"><b>이전 컨테이너</b>중지, 삭제</div>
+        <div class="sim" data-sim="deploy">
+          <div class="lane">
+            <div class="lane-name">AWS EC2에 배포</div>
+            <div class="figure traffic-wrap">
+              <svg class="dg traffic to-blue" viewBox="0 0 450 160" role="img" aria-label="Nginx가 요청을 blue(8080) 또는 green(9090) 컨테이너로 보내는 구조">
+                <defs>
+                  <path id="rt-blue" d="M38 80H190C228 80 226 40 262 40"/>
+                  <path id="rt-green" d="M38 80H190C228 80 226 120 262 120"/>
+                </defs>
+                <text class="t" x="17" y="84">요청</text>
+                <path class="route r-in" d="M38 80H86"/>
+                <path class="route r-blue" d="M190 80C228 80 226 40 262 40"/>
+                <path class="route r-green" d="M190 80C228 80 226 120 262 120"/>
+                <g class="dots dots-blue">
+                  <circle r="3.2"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0s"><mpath href="#rt-blue"/></animateMotion></circle>
+                  <circle r="3.2"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.6s"><mpath href="#rt-blue"/></animateMotion></circle>
+                  <circle r="3.2"><animateMotion dur="1.8s" repeatCount="indefinite" begin="1.2s"><mpath href="#rt-blue"/></animateMotion></circle>
+                </g>
+                <g class="dots dots-green">
+                  <circle r="3.2"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0s"><mpath href="#rt-green"/></animateMotion></circle>
+                  <circle r="3.2"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.6s"><mpath href="#rt-green"/></animateMotion></circle>
+                  <circle r="3.2"><animateMotion dur="1.8s" repeatCount="indefinite" begin="1.2s"><mpath href="#rt-green"/></animateMotion></circle>
+                </g>
+                <rect class="bx" x="86" y="55" width="104" height="50" rx="3"/><text class="t" x="138" y="77">Nginx</text><text class="s" x="138" y="94">upstream 전환</text>
+                <g class="box-blue"><rect class="bx" x="262" y="16" width="184" height="48" rx="3"/><text class="t" x="354" y="37">blue :8080</text><text class="s" x="354" y="54" data-out="blue">v1 운영 중</text></g>
+                <g class="box-green"><rect class="bx" x="262" y="96" width="184" height="48" rx="3"/><text class="t" x="354" y="117">green :9090</text><text class="s" x="354" y="134" data-out="green">비어 있음</text></g>
+              </svg>
+            </div>
+            <div class="flow">
+              <div class="node2" data-step="1"><b>현재 색 확인</b>/server/env</div>
+              <div class="arr"></div>
+              <div class="node2 hl" data-step="2"><b>반대 색 기동</b>8080 또는 9090</div>
+              <div class="arr"></div>
+              <div class="node2 hl" data-step="3"><b>헬스체크</b>10초 간격, 최대 3회</div>
+              <div class="arr"></div>
+              <div class="node2" data-step="4"><b>Nginx 전환</b>설정 갱신, reload</div>
+              <div class="arr"></div>
+              <div class="node2" data-step="5"><b>이전 컨테이너</b>중지, 삭제</div>
+            </div>
           </div>
+          <div class="sim-foot"><p class="sim-cap" aria-live="polite">blue(8080)가 요청을 받는 중에 main에 새 버전이 반영된 경우입니다.</p><button class="replay" type="button">다시 보기</button></div>
         </div>
       </div></div>
       <div class="row"><div class="k">다중 조건 검색</div><div class="v">지역, 과목, 요일, 학생 유형 조건을 MyBatis 동적 SQL로 조합해 공고 ID만 먼저 뽑고, 그 ID로 과목·요일 같은 1:N 상세를 한 번에 조회했습니다. 조건 필터가 상세 목록을 잘라내지 않고, 비활성 회원의 공고는 빠지게 했습니다.</div></div>
@@ -505,5 +638,6 @@
 <footer class="foot"><div class="wrap">정건희, 2026년 10월 업데이트</div></footer>
 
 <script src="assets/site.js"></script>
+<script src="assets/motion.js"></script>
 </body>
 </html>

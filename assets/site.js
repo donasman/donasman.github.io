@@ -56,9 +56,10 @@
     applyFocus(current());
   }
 
-  // 지금 강조할 대상: 고정(pin)된 항목, 없으면 마우스가 올라간 항목
+  // 지금 강조할 대상: 고정(pin)된 항목, 마우스가 올라간 항목, 자동 둘러보기 순서
   let hovered = null;
-  const current = () => pinned || hovered;
+  let tour = null;
+  const current = () => pinned || hovered || tour;
 
   function applyFocus(target) {
     schema.classList.toggle('focusing', !!target);
@@ -100,6 +101,30 @@
     });
   }
 
+  // 손대기 전까지는 경험을 하나씩 돌아가며 강조해, 관계도를 어떻게 읽는지 먼저 보여 준다.
+  // 마우스를 올리거나 포커스·터치하면 그 뒤로는 멈춘다. 화면 밖이거나 탭이 가려지면 쉰다.
+  const tourOrder = [...exps.values()];
+  let tourIndex = -1;
+  let tourTimer = 0;
+  let tourStopped = reduceMotion.matches;
+  let schemaVisible = false;
+  const stopTour = () => {
+    tourStopped = true;
+    clearTimeout(tourTimer);
+    if (tour) { tour = null; applyFocus(current()); }
+  };
+  const tourTick = () => {
+    if (tourStopped) return;
+    if (schemaVisible && !document.hidden && wide.matches) {
+      tourIndex = (tourIndex + 1) % (tourOrder.length + 1);
+      tour = tourOrder[tourIndex] || null; // 한 바퀴 끝에 한 번은 전체 관계를 보여 준다
+      applyFocus(current());
+    }
+    tourTimer = setTimeout(tourTick, 2400);
+  };
+  ['pointerenter', 'focusin', 'touchstart'].forEach(ev => schema.addEventListener(ev, stopTour, { once: true, passive: true }));
+  new IntersectionObserver(([entry]) => { schemaVisible = entry.isIntersecting; }, { threshold: 0.3 }).observe(schema);
+
   // 폰트가 준비된 뒤 한 번만 선을 그리며 등장시키고, 이후에는 크기가 실제로 바뀔 때만 다시 그린다.
   let ready = false;
   let lastSize = '';
@@ -118,5 +143,51 @@
     lastSize = sizeKey();
     draw(!drawnOnce);
     drawnOnce = true;
+    if (!tourStopped) tourTimer = setTimeout(tourTick, 1600);
   });
+})();
+
+// 실제 화면: 탭으로 화면을 바꾼다. ←, →, Home, End 키도 쓸 수 있다.
+document.querySelectorAll('[data-screens]').forEach((fig) => {
+  const tabs = [...fig.querySelectorAll('[role="tab"]')];
+  const select = (tab, focus) => {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute('aria-controls'));
+      panel.hidden = !on;
+      if (on) { panel.classList.remove('enter'); void panel.offsetWidth; panel.classList.add('enter'); }
+    }
+    if (focus) tab.focus();
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', (e) => {
+      const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (next === undefined) return;
+      e.preventDefault();
+      select(tabs[(next + tabs.length) % tabs.length], true);
+    });
+  });
+});
+
+// 수집 경로 따라가기: 그림이 화면에 있는 동안 수집 순서대로 상자와 선을 강조한다.
+(() => {
+  const fig = document.querySelector('[data-trace-fig]');
+  if (!fig || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const groups = [1, 2, 3, 4, 5].map((n) => [...fig.querySelectorAll(`[data-trace="${n}"]`)]);
+  let i = -1;
+  let timer = 0;
+  const clear = () => groups.flat().forEach((el) => el.classList.remove('trace'));
+  const tick = () => {
+    clear();
+    i = (i + 1) % (groups.length + 1); // 마지막 한 칸은 쉬는 시간
+    groups[i]?.forEach((el) => el.classList.add('trace'));
+    timer = setTimeout(tick, i === groups.length ? 1400 : 800);
+  };
+  new IntersectionObserver(([entry]) => {
+    clearTimeout(timer);
+    if (entry.isIntersecting) tick(); else { clear(); i = -1; }
+  }, { threshold: 0.4 }).observe(fig);
 })();

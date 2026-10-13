@@ -257,6 +257,122 @@ ul.list > li::before {
 .dg .lb { font-size: 8.6px; fill: var(--jade); text-anchor: middle; }
 .dg .head { fill: var(--jade); }
 
+.fig-cap { margin-top: 12px; font-size: 14.5px; color: var(--muted); max-width: var(--measure); }
+
+/* 수집 경로 따라가기: 지금 단계의 상자와 선만 굵게 */
+.dg .bx[data-trace], .dg .ln[data-trace] { transition: stroke-width .25s, fill .25s, stroke .25s; }
+.dg .bx.trace { stroke: var(--jade); stroke-width: 2.6; fill: var(--jade-tint); }
+.dg .ln.trace { stroke-width: 2.4; }
+
+/* ---------- 실제 화면 ---------- */
+.screens { margin-top: 40px; }
+.screens .tabs { display: flex; flex-wrap: wrap; gap: 0 24px; border-bottom: 1px solid var(--rule); }
+.screens .tab {
+  background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  font: inherit; font-size: 15.5px; font-weight: 600; color: var(--muted); cursor: pointer;
+  padding: 8px 0 10px;
+}
+.screens .tab:hover { color: var(--ink); }
+.screens .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--jade); }
+.screen { padding-top: 16px; }
+.screen[hidden] { display: none; }
+.screen .route { font-family: var(--mono); font-size: 13px; letter-spacing: 0; color: var(--muted); margin-bottom: 8px; }
+.shot {
+  display: block; overflow: hidden;
+  border: 1.5px solid var(--ink); border-radius: 8px; background: var(--surface);
+}
+.shot img { display: block; width: 100%; height: auto; }
+.screen.enter .shot { animation: shot-in .25s ease-out; }
+@keyframes shot-in { from { opacity: 0; } to { opacity: 1; } }
+.screen .cap { margin-top: 12px; font-size: 15.5px; color: var(--ink); max-width: var(--measure); }
+.screens .note { margin-top: 10px; font-size: 14px; color: var(--muted); }
+@media (prefers-color-scheme: dark) { .shot.dim img { filter: brightness(.86); } }
+
+/* ---------- 움직이는 설명 ---------- */
+.sim-state { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-bottom: 12px; }
+.req {
+  display: flex; align-items: baseline; gap: 8px;
+  border: 1.5px solid var(--rule); border-radius: 6px; background: var(--surface);
+  padding: 5px 12px; font-size: 14.5px;
+  transition: border-color .25s, background .25s;
+}
+.req b { font-weight: 650; }
+.req span { color: var(--muted); }
+.req .st { font-style: normal; font-size: 13.5px; font-weight: 650; color: var(--muted); }
+.req.run { border-color: var(--jade); }
+.req.run .st { color: var(--jade); }
+.req.ok { border-color: var(--jade); background: var(--jade-tint); }
+.req.ok .st { color: var(--jade); }
+.req.no { border-color: var(--ink); }
+.req.no .st { color: var(--paper); background: var(--ink); border-radius: 4px; padding: 0 6px; }
+.gauge { margin-left: auto; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; font-size: 14px; color: var(--muted); }
+.gauge b { color: var(--ink); font-size: 18px; font-weight: 750; margin-right: 10px; transition: color .3s; }
+.gauge b:last-child { margin-right: 0; }
+.gauge b.flash { color: var(--jade); }
+
+.sim .node2 { position: relative; transition: border-color .25s, background .25s, color .25s; }
+.sim.playing .node2.hl:not(.at) { border-color: var(--ink); background: var(--surface); }
+.sim .node2.at { border-color: var(--jade); background: var(--jade-tint); }
+.sim .node2.no { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.sim .node2.no b, .sim .node2.no code { color: var(--paper); }
+.sim .node2[data-who]::after {
+  content: attr(data-who);
+  position: absolute; top: -10px; right: -8px;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--jade); color: var(--paper);
+  font-size: 12px; font-weight: 750; line-height: 1;
+}
+.sim .node2.no[data-who]::after { background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1.5px var(--ink); }
+
+.sim-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-top: 12px; }
+.sim-cap { font-size: 15px; min-height: 3.5em; }
+.replay {
+  flex: none; visibility: hidden;
+  background: none; border: 0; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--jade); cursor: pointer;
+  text-decoration: underline; text-decoration-color: var(--jade-line); text-underline-offset: 4px;
+}
+.sim.done .replay { visibility: visible; }
+
+/* blue/green 전환 */
+.traffic-wrap { margin: 0 0 12px; }
+.traffic-wrap svg { min-width: 0; max-width: 560px; }
+.traffic .t { font-size: 13px; }
+.traffic .s { font-size: 11.5px; }
+.traffic .route { fill: none; stroke: var(--rule); stroke-width: 1.5; stroke-dasharray: 4 4; transition: stroke .3s; }
+.traffic .r-in, .traffic.to-blue .r-blue, .traffic.to-green .r-green { stroke: var(--jade); stroke-dasharray: none; }
+.traffic .dots circle { fill: var(--jade); }
+.traffic .dots { transition: opacity .3s; }
+.traffic.to-blue .dots-green, .traffic.to-green .dots-blue { opacity: 0; }
+.traffic g[class^="box-"] { transition: opacity .4s; }
+.traffic .box-green .bx { stroke-dasharray: 4 3; stroke: var(--muted); }
+.traffic.green-up .box-green .bx { stroke-dasharray: none; stroke: var(--ink); }
+.traffic.hc-run .box-green .bx { stroke: var(--jade); stroke-dasharray: 4 3; }
+.traffic.hc-ok .box-green .bx { stroke: var(--jade); stroke-dasharray: none; }
+.traffic.to-green .box-green .bx, .traffic.to-blue .box-blue .bx { fill: var(--jade-tint); stroke: var(--jade); stroke-dasharray: none; }
+.traffic.blue-off .box-blue { opacity: .4; }
+.traffic.blue-off .box-blue .bx { fill: var(--surface); stroke: var(--muted); stroke-dasharray: 4 3; }
+
+/* 처음부터 다시 vs 저장 시점부터 */
+.bars { margin-top: 16px; display: grid; gap: 14px; }
+.bar-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) 132px; align-items: center; column-gap: 12px; }
+.bar-k { font-size: 14px; font-weight: 650; color: var(--muted); }
+.bar { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; padding-bottom: 9px; position: relative; }
+.bar i { display: block; height: 16px; border-radius: 2px; background: var(--rule); position: relative; transition: background .12s; }
+.bar i.on { background: var(--jade); }
+.bar i.fail { background: var(--ink); }
+.bar i.save::after { content: ""; position: absolute; left: calc(50% - 1px); bottom: -9px; width: 2px; height: 6px; border-radius: 1px; background: var(--ink); }
+.bar-row[data-row="before"] .bar i.save::after { display: none; }
+.bar-st { font-size: 13.5px; color: var(--muted); }
+.bar-st.ok { color: var(--jade); font-weight: 650; }
+.bar-legend { margin-top: 8px; font-size: 13.5px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .replay { display: none; }
+  .traffic .dots { display: none; }
+  .screen.enter .shot { animation: none; }
+}
+
 /* ---------- 경력과 학습 ---------- */
 .timeline .row > .k { font-weight: 500; font-variant-numeric: tabular-nums; }
 .timeline .row b { font-weight: 650; }
@@ -313,4 +429,14 @@ ul.list > li::before {
     border-left: 4.5px solid transparent; border-right: 4.5px solid transparent; border-top: 6px solid var(--jade); border-bottom: 0;
   }
   .contact .big { font-size: 22px; }
+
+  .screens { margin-top: 32px; }
+  .screens .tabs { flex-wrap: nowrap; overflow-x: auto; gap: 0 20px; scrollbar-width: none; }
+  .screens .tab { flex: none; font-size: 15px; }
+  .screen .cap { font-size: 15px; }
+  .gauge { margin-left: 0; width: 100%; }
+  .sim-foot { flex-direction: column; gap: 4px; }
+  .sim-cap { min-height: 5.25em; }
+  .bar-row { grid-template-columns: 34px minmax(0, 1fr); row-gap: 2px; }
+  .bar-st { grid-column: 2; }
 }
