@@ -88,15 +88,15 @@ async function build() {
   const s4 = g(svg, { opacity: 0 }), s6 = g(), chrome = g();
   const fadeOut = el('rect', { x: 0, y: 0, width: W, height: H, fill: C.paper, opacity: 0 });
 
-  /* ============ 1. 정합: 흩어진 행이 표로 맞물린다 ============ */
+  /* ============ 1. 같은 요청 두 번, 결과는 한 번: 흩어진 행이 표로 맞물린다 ============ */
   const LS = { 'letter-spacing': -5 };
-  const l1 = T(s1, 120, 410, '데이터가', 132, 820, C.ink, LS);
-  const l2txt = '어긋나지 않는';
+  const l1 = T(s1, 120, 410, '같은 요청이', 132, 820, C.ink, LS);
+  const l2txt = '두 번 와도,';
   const probe = T(s1, 120, 560, l2txt, 132, 820, C.ink, LS);
   const xs = [...l2txt].map((_, i) => probe.getStartPositionOfChar(i).x - 120); // 커닝이 반영된 실제 위치
   probe.remove();
   const l2 = [...l2txt].map((ch, i) => (ch === ' ' ? null : T(s1, 120 + xs[i], 560, ch, 132, 820, C.ink))).filter(Boolean);
-  const l3 = T(s1, 120, 710, '구조', 132, 820, C.jade, LS);
+  const l3 = T(s1, 120, 710, '결과는 한 번만', 132, 820, C.jade, LS);
   const under = el('rect', { x: 120, y: 742, width: 0, height: 12, rx: 6, fill: C.jade }, s1);
 
   tl.fromTo(l1, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'expo.out' }, 0.1);
@@ -107,7 +107,7 @@ async function build() {
     tl.to(ch, { x: 0, y: 0, rotation: 0, duration: 0.55, ease: 'expo.out' }, 1.02 + i * 0.03);
   });
   tl.fromTo(l3, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'expo.out' }, 1.42);
-  tl.to(under, { attr: { width: 248 }, duration: 0.5, ease: 'expo.out' }, 1.58);
+  tl.to(under, { attr: { width: l3.getComputedTextLength() }, duration: 0.5, ease: 'expo.out' }, 1.58);
 
   // 표: 12행 4열. 처음엔 흩어져 있다가 스캔선이 지나가는 순서대로 제자리에 맞물린다
   const tbl = { x0: 1060, y0: 290, rowH: 36, gap: 14, cols: [110, 240, 170, 150], cg: 16 };
@@ -219,7 +219,7 @@ async function build() {
   const gate = g(s3, { opacity: 0 });
   el('rect', { x: 820, y: 540, width: 280, height: 120, rx: 14, fill: C.surface, stroke: C.ink, 'stroke-width': 3 }, gate);
   T(gate, 960, 592, 'API 클라이언트', 32, 750, C.ink, { 'text-anchor': 'middle' });
-  T(gate, 960, 632, '분당 450콜 제한', 24, 500, C.muted, { 'text-anchor': 'middle' });
+  T(gate, 960, 632, '분당 자체 상한', 24, 500, C.muted, { 'text-anchor': 'middle' });
   const db = g(s3, { opacity: 0 });
   el('rect', { x: 1430, y: 516, width: 320, height: 36, rx: 9, fill: C.jade }, db);
   const dbRows = [0, 1, 2, 3].map((i) => {
@@ -265,7 +265,7 @@ async function build() {
   });
 
   // 수치
-  const nums = [['13,724', 13724, '경기'], ['2,110', 2110, '팀'], ['30,925', 30925, '선수 시즌 통계']];
+  const nums = [['13,724', 13724, '경기'], ['2,110', 2110, '팀'], ['13,608', 13608, '선수']];
   const numX = [120, 640, 1080];
   const numEls = nums.map(([, v, unit], i) => {
     const [t, parts] = spans(s3, numX[i], 905, [['0', 96, 850, C.ink], [' ' + unit, 32, 650, C.muted]]);
@@ -476,13 +476,13 @@ async function build() {
   const skills = [
     ['Java', 'work lessontree'], ['Spring', 'work lessontree'], ['MyBatis', 'lessontree'], ['TypeScript', 'pitchlog fantasteel'],
     ['NestJS', 'pitchlog fantasteel'], ['Prisma', 'pitchlog fantasteel'], ['PostgreSQL', 'work pitchlog fantasteel'], ['MySQL', 'lessontree'],
-    ['Python', 'work'], ['QGIS, ArcGIS', 'work'], ['Vitest, Jest', 'pitchlog fantasteel'], ['GitHub Actions', 'pitchlog lessontree'],
+    ['Python', 'work'], ['QGIS, ArcGIS', 'work'], ['Vitest, Jest', 'pitchlog fantasteel'], ['GitHub Actions', 'pitchlog fantasteel lessontree'],
     ['AWS EC2, S3', 'pitchlog lessontree'], ['Docker, Nginx', 'lessontree'],
   ];
   const exps = [
-    ['work', '도시재생 종합정보체계 유지관리', '실무, 2024.09 – 2025.08', '../assets/marks/work.svg', true],
-    ['pitchlog', 'PitchLog League', '개인 프로젝트, 2026.08 – 2026.10', '../assets/marks/pitchlog.svg', false],
     ['fantasteel', 'FantaSteel ERP', '팀 프로젝트 5인, 2026.09 – 2026.10', '../assets/marks/fantasteel.svg', false],
+    ['pitchlog', 'PitchLog League', '개인 프로젝트, 2026.08 – 2026.10', '../assets/marks/pitchlog.svg', false],
+    ['work', '도시재생 종합정보체계 유지관리', '실무, 2024.09 – 2025.08', '../assets/marks/work.svg', true],
     ['lessontree', '과외나무 LessonTree', '팀 프로젝트 3인 팀장, 2024.04 – 2024.05', '../assets/marks/lessontree.png', true],
   ];
   const SK = { x: 330, y: 160, w: 330, head: 56, row: 46 };
@@ -544,7 +544,7 @@ async function build() {
   };
   const c1 = clip('c1', 300, 240), c2 = clip('c2', 545, 80), c3 = clip('c3', 632, 64);
   T(endG, 120, 500, '정건희', 200, 850, C.ink, { 'clip-path': 'url(#c1)' });
-  T(endG, 120, 598, '데이터가 어긋나지 않는 구조를 만드는 백엔드 개발자', 50, 680, C.ink, { 'clip-path': 'url(#c2)' });
+  T(endG, 120, 598, '같은 요청이 두 번 와도, 결과는 한 번만 남기는 백엔드 개발자', 50, 680, C.ink, { 'clip-path': 'url(#c2)' });
   T(endG, 120, 676, 'donasman.github.io', 40, 500, C.jade, { class: 'mono', 'clip-path': 'url(#c3)' });
   const endBar = el('rect', { x: 120, y: 726, width: 0, height: 10, rx: 5, fill: C.jade }, endG);
   tl.to(c1, { attr: { width: 1700 }, duration: 0.55, ease: 'expo.out' }, 14.0);
